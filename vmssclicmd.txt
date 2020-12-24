@@ -1,0 +1,65 @@
+// 仮想ネットワークの作成
+az network vnet create \
+  --resource-group ovaaskawasaki \
+  --name ovaasvmssVNet \
+  --address-prefixes 10.1.0.0/16 \
+  --subnet-name myBackendSubnet \
+  --subnet-prefixes 10.1.0.0/16
+
+//　プライベートロードバランサーの作成（フロントエンドip = 10.1.1.1）
+az network lb create \
+  --resource-group ovaaskawasaki \
+  --name myLoadBalancer \
+  --sku Basic \
+  --vnet-name ovaasvmssVNet \
+  --subnet myBackendSubnet \
+  --backend-pool-name myBackEndPool \
+  --frontend-ip-name myFrontEnd \
+  --private-ip-address 10.1.1.1
+
+// vmssの作成
+az vmss create \
+  --resource-group ovaaskawasaki \
+  --name myScaleSetF1Sku \
+  --image UbuntuLTS \
+  --vm-sku Standard_D2s_v3 \
+  --admin-user azureuser \
+  --admin-password @Testtest1234 \
+  --upgrade-policy-mode Automatic \
+  --authentication-type password \
+  --load-balancer myLoadBalancer \
+  --vnet-name ovaasvmssVNet \
+  --subnet myBackendSubnet
+
+// カスタムスクリプトのインストール・実行
+az vmss extension set \
+  --vmss-name myScaleSetF1Sku \
+  --publisher Microsoft.Azure.Extensions \
+  --version 2.0 \
+  --name CustomScript \
+  --resource-group ovaaskawasaki \
+  --settings '{"fileUris": ["https://raw.githubusercontent.com/OVaaS/ovaas-server/master/script.sh"],"commandToExecute": "sh /var/lib/waagent/custom-script/download/1/script.sh"}'
+
+// オートスケールの設定ファイルを作成（インスタンス最低数：2　最高数：10）
+az monitor autoscale create \
+  --resource-group ovaaskawasaki \
+  --resource myScaleSetF1Sku \
+  --resource-type Microsoft.Compute/virtualMachineScaleSets \
+  --name autoscale \
+  --min-count 2 \
+  --max-count 10 \
+  --count 2
+
+// オートスケールの設定変更（過去５分の平均CPU使用率が70％以上の場合、インスタンスを3つ作成）
+az monitor autoscale rule create \
+  --resource-group ovaaskawasaki \
+  --autoscale-name autoscale \
+  --condition "Percentage CPU > 70 avg 5m" \
+  --scale out 3
+
+// オートスケールの設定変更（過去５分の平均CPU使用率が30％未満に場合、インスタンスを1つ削除）
+az monitor autoscale rule create \
+  --resource-group ovaaskawasaki \
+  --autoscale-name autoscale \
+  --condition "Percentage CPU < 30 avg 5m" \
+  --scale in 1
