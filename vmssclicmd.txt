@@ -1,65 +1,65 @@
 // 仮想ネットワークの作成
 az network vnet create \
-  --resource-group ovaaskawasaki \
-  --name ovaasvmssVNet \
-  --address-prefixes 10.1.0.0/16 \
-  --subnet-name myBackendSubnet \
-  --subnet-prefixes 10.1.0.0/16
+  --resource-group ovaaskawasaki \ # リソースグループの選択
+  --name ovaasvmssVNet \ # 仮想ネットワークの名前
+  --address-prefixes 10.1.0.0/16 \ # ネットワークの範囲決定
+  --subnet-name myBackendSubnet \ # サブネットの名前
+  --subnet-prefixes 10.1.0.0/16 # サブネットの範囲決定
 
 //　プライベートロードバランサーの作成（フロントエンドip = 10.1.1.1）
 az network lb create \
-  --resource-group ovaaskawasaki \
-  --name myLoadBalancer \
-  --sku Basic \
-  --vnet-name ovaasvmssVNet \
-  --subnet myBackendSubnet \
-  --backend-pool-name myBackEndPool \
-  --frontend-ip-name myFrontEnd \
-  --private-ip-address 10.1.1.1
+  --resource-group ovaaskawasaki \ # リソーグループの選択
+  --name myLoadBalancer \ # ロードバランサーの名前
+  --sku Basic \ # ロードバランサーのタイプ選択
+  --vnet-name ovaasvmssVNet \ # 使用する仮想ネットワークの選択
+  --subnet myBackendSubnet \ # 使用するサブネットの選択
+  --backend-pool-name myBackEndPool \ # バックエンドプールの名前
+  --frontend-ip-name myFrontEnd \ # フロントエンドの名前
+  --private-ip-address 10.1.1.1 # ipアドレスを静的ipの10.1.1.1に選択
 
 // vmssの作成
 az vmss create \
-  --resource-group ovaaskawasaki \
-  --name myScaleSetF1Sku \
-  --image UbuntuLTS \
-  --vm-sku Standard_D2s_v3 \
-  --admin-user azureuser \
-  --admin-password @Testtest1234 \
-  --upgrade-policy-mode Automatic \
-  --authentication-type password \
-  --load-balancer myLoadBalancer \
-  --vnet-name ovaasvmssVNet \
-  --subnet myBackendSubnet
+  --resource-group ovaaskawasaki \ # リソースグループの選択
+  --name myScaleSetF1Sku \ # スケールセットの名前
+  --image UbuntuLTS \ # VMで使用するOSイメージの決定
+  --vm-sku Standard_D2s_v3 \ # VMのサイズ決定
+  --admin-user azureuser \ # OSのユーザー名決定
+  --admin-password @Testtest1234 \ # OSのユーザーパスワード決定
+  --upgrade-policy-mode Automatic \ # OSの自動アップグレード設定
+  --authentication-type password \ # OSログイン時の認証方法決定
+  --load-balancer myLoadBalancer \ # 使用するロードバランサーの決定
+  --vnet-name ovaasvmssVNet \ # 使用する仮想ネットワークの決定
+  --subnet myBackendSubnet # 使用するサブネットの決定
 
 // カスタムスクリプトのインストール・実行
 az vmss extension set \
-  --vmss-name myScaleSetF1Sku \
-  --publisher Microsoft.Azure.Extensions \
-  --version 2.0 \
-  --name CustomScript \
-  --resource-group ovaaskawasaki \
-  --settings '{"fileUris": ["https://raw.githubusercontent.com/OVaaS/ovaas-server/master/script.sh"],"commandToExecute": "sh /var/lib/waagent/custom-script/download/1/script.sh"}'
+  --vmss-name myScaleSetF1Sku \ # 使用するスケールセットの選択
+  --publisher Microsoft.Azure.Extensions \ # インストールする拡張機能の場所
+  --version 2.0 \ # カスタムスクリプトのバージョン
+  --name CustomScript \ # インストールする拡張機能の選択
+  --resource-group ovaaskawasaki \ # 使用するリソースグループ
+  --settings '{"fileUris": ["https://raw.githubusercontent.com/OVaaS/ovaas-server/master/script.sh"],"commandToExecute": "sh /var/lib/waagent/custom-script/download/1/script.sh"}' # 使用するスクリプトの保存場所・実行コマンド
 
 // オートスケールの設定ファイルを作成（インスタンス最低数：2　最高数：10）
 az monitor autoscale create \
-  --resource-group ovaaskawasaki \
-  --resource myScaleSetF1Sku \
-  --resource-type Microsoft.Compute/virtualMachineScaleSets \
-  --name autoscale \
-  --min-count 2 \
-  --max-count 10 \
+  --resource-group ovaaskawasaki \ # 使用するリソースグループの決定
+  --resource myScaleSetF1Sku \ # 使用するスケールセットの選択
+  --resource-type Microsoft.Compute/virtualMachineScaleSets \ # 使用するサービスの選択
+  --name autoscale \ # 設定ファイルの名前決定
+  --min-count 2 \ # インスタンスの最低個数
+  --max-count 10 \ # インスタンスの最大個数
   --count 2
 
 // オートスケールの設定変更（過去５分の平均CPU使用率が70％以上の場合、インスタンスを3つ作成）
 az monitor autoscale rule create \
-  --resource-group ovaaskawasaki \
-  --autoscale-name autoscale \
-  --condition "Percentage CPU > 70 avg 5m" \
-  --scale out 3
+  --resource-group ovaaskawasaki \ # 使用するリソースグループの決定
+  --autoscale-name autoscale \ # 適応する設定ファイルの名前
+  --condition "Percentage CPU > 70 avg 5m" \ # オートスケールの条件設定
+  --scale out 3 # オートスケール実行内容
 
 // オートスケールの設定変更（過去５分の平均CPU使用率が30％未満に場合、インスタンスを1つ削除）
 az monitor autoscale rule create \
-  --resource-group ovaaskawasaki \
-  --autoscale-name autoscale \
-  --condition "Percentage CPU < 30 avg 5m" \
-  --scale in 1
+  --resource-group ovaaskawasaki \ # 使用するリソースグループの決定
+  --autoscale-name autoscale \ # 適応する設定ファイルの名前
+  --condition "Percentage CPU < 30 avg 5m" \ # オートスケールの条件設定
+  --scale in 1 # オートスケール実行内容
