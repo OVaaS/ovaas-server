@@ -29,7 +29,8 @@ az vmss create \
   --authentication-type password \
   --load-balancer myLoadBalancer \
   --vnet-name ovaasvmssVNet \
-  --subnet myBackendSubnet
+  --subnet myBackendSubnet \
+  --scale-in-policy OldestVM
 
 // カスタムスクリプトのインストール・実行
 az vmss extension set \
