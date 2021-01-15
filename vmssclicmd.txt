@@ -8,13 +8,13 @@ az network vnet create \
 
 // パブリックIPの作成
 az network public-ip create \
-  --resource-group kawasakiovaas \
+  --resource-group ovaaskawasaki \
   --name myPublicIP \
   --sku Standard
   
 // ロードバランサーの作成
 az network lb create \
-  --resource-group kawasakiovaas \
+  --resource-group ovaaskawasaki \
   --name testLoadBalancer \
   --sku Standard \
   --backend-pool-name myBackEndPool \
