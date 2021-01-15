@@ -6,16 +6,19 @@ az network vnet create \
   --subnet-name myBackendSubnet \
   --subnet-prefixes 10.1.0.0/16
 
-//　プライベートロードバランサーの作成（フロントエンドip = 10.1.1.1）
+// パブリックIPの作成
+az network public-ip create \
+  --resource-group kawasakiovaas \
+  --name myPublicIP \
+  --sku Standard
+// ロードバランサーの作成
 az network lb create \
-  --resource-group ovaaskawasaki \
-  --name myLoadBalancer \
-  --sku Basic \
-  --vnet-name ovaasvmssVNet \
-  --subnet myBackendSubnet \
+  --resource-group kawasakiovaas \
+  --name testLoadBalancer \
+  --sku Standard \
   --backend-pool-name myBackEndPool \
   --frontend-ip-name myFrontEnd \
-  --private-ip-address 10.1.1.1
+  --public-ip-address myPublicIP
 
 // vmssの作成
 az vmss create \
