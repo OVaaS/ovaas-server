@@ -11,6 +11,7 @@ az network public-ip create \
   --resource-group kawasakiovaas \
   --name myPublicIP \
   --sku Standard
+  
 // ロードバランサーの作成
 az network lb create \
   --resource-group kawasakiovaas \
