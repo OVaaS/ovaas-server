@@ -20,6 +20,11 @@ sudo add-apt-repository \
 sudo apt-get update  -y
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
+# Create docker user group
+sudo groupadd docker
+# Add current user to docker group
+sudo usermod -aG docker $USER
+
 # Install docker compose
 sudo curl -L --fail https://github.com/docker/compose/releases/download/1.28.0/run.sh -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
