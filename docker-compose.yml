@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  # human-pose-estimation
+  model_human_pose:
+    image: openvino/model_server:latest
+    restart: unless-stopped
+    ports:
+      - '9000:9000'
+    volumes:
+      - ./models/human-pose-estimation/1:/models/human-pose-estimation/1
+    command: '/ovms/bin/ovms --model_path /models/human-pose-estimation --model_name human-pose-estimation --port 9000 --log_level INFO --shape auto --grpc_workers 3'
+    networks:
+      - model_server
+  # handwritten-japanese-recognition
+  handwritten:
+    image: openvino/model_server:latest
+    restart: unless-stopped
+    ports:
+      - '9001:9001'
+    volumes:
+      - ./models/handwritten-japanese-recognition/1:/models/handwritten-japanese-recognition/1
+    command: '/ovms/bin/ovms --model_path /models/handwritten-japanese-recognition --model_name handwritten-japanese-recognition --port 9001 --log_level INFO --shape auto --grpc_workers 3'
+    networks:
+      - model_server
+
+networks:
+  model_server:
+    driver: bridge
