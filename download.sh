@@ -20,3 +20,9 @@ $URL/$HANDWRITTEN/FP32/$HANDWRITTEN.xml \
 $URL/$HANDWRITTEN/FP32/$HANDWRITTEN.bin \
 -o ./models/handwritten-japanese-recognition/1/$HANDWRITTEN.xml \
 -o ./models/handwritten-japanese-recognition/1/$HANDWRITTEN.bin
+
+# Download and convert colorization model
+bash ./build_colorizetion_model.sh
+mkdir -p ./models/colorization-v2/1
+mv ./temp/* ./models/colorization-v2/1
+rm -r ./temp
