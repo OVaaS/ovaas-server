@@ -9,7 +9,7 @@ services:
       - '9000:9000'
     volumes:
       - ./models/human-pose-estimation/1:/models/human-pose-estimation/1
-    command: '/ovms/bin/ovms --model_path /models/human-pose-estimation --model_name human-pose-estimation --port 9000 --log_level INFO --shape auto --grpc_workers 3'
+    command: '/ovms/bin/ovms --model_path /models/human-pose-estimation --model_name human-pose-estimation --port 9000 --log_level INFO --shape auto --grpc_workers 2'
     networks:
       - model_server
   # handwritten-japanese-recognition
@@ -20,7 +20,7 @@ services:
       - '9001:9001'
     volumes:
       - ./models/handwritten-japanese-recognition/1:/models/handwritten-japanese-recognition/1
-    command: '/ovms/bin/ovms --model_path /models/handwritten-japanese-recognition --model_name handwritten-japanese-recognition --port 9001 --log_level INFO --shape auto --grpc_workers 3'
+    command: '/ovms/bin/ovms --model_path /models/handwritten-japanese-recognition --model_name handwritten-japanese-recognition --port 9001 --log_level INFO --shape auto --grpc_workers 2'
     networks:
       - model_server
 
