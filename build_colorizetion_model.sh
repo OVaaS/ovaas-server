@@ -1,7 +1,7 @@
 #!/bin/bash
 
 docker run -it -u 0 --rm \
--v $(pwd)/temp:/opt/intel/openvino_2021.2.185/temp \
+-v $(pwd)/temp:/opt/intel/openvino_2021.1.110/temp \
 openvino/ubuntu18_dev:2021.1 bash -c \
 "python3 ./deployment_tools/tools/model_downloader/downloader.py --list ./inference_engine/demos/python_demos/colorization_demo/models.lst && \
 python3 ./deployment_tools/tools/model_downloader/converter.py --name colorization-v2 && \
