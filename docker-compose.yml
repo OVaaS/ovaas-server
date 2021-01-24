@@ -23,7 +23,7 @@ services:
     command: '/ovms/bin/ovms --model_path /models/handwritten-japanese-recognition --model_name handwritten-japanese-recognition --port 9001 --log_level INFO --shape auto --grpc_workers 2'
     networks:
       - model_server
-  # handwritten-japanese-recognition
+  # colorization
   colorization:
     image: openvino/model_server:2021.1
     restart: unless-stopped
