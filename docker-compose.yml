@@ -25,7 +25,7 @@ services:
       - model_server
   # handwritten-japanese-recognition
   colorization:
-    image: openvino/model_server:latest
+    image: openvino/model_server:2021.1
     restart: unless-stopped
     ports:
       - '9002:9002'
