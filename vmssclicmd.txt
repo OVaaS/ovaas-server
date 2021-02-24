@@ -15,7 +15,7 @@ az network public-ip create \
 // ロードバランサーの作成
 az network lb create \
   --resource-group ovaaskawasaki \
-  --name testLoadBalancer \
+  --name myLoadBalancer \
   --sku Standard \
   --backend-pool-name myBackEndPool \
   --frontend-ip-name myFrontEnd \
