@@ -3,7 +3,39 @@
   --name myLoadBalancerRuleWeb \
   --lb-name myLoadBalancer \
   --backend-pool-name myLoadBalancerBEPool \
-  --backend-port 80 \
+  --backend-port 9000 \
   --frontend-ip-name loadBalancerFrontEnd \
-  --frontend-port 80 \
+  --frontend-port 9000 \
   --protocol tcp
+
+  az network lb rule create \
+  --resource-group kawasakiovaas \
+  --name myLoadBalancerRuleWeb \
+  --lb-name myLoadBalancer \
+  --backend-pool-name myLoadBalancerBEPool \
+  --backend-port 9001 \
+  --frontend-ip-name loadBalancerFrontEnd \
+  --frontend-port 9001 \
+  --protocol tcp
+  
+    az network lb rule create \
+  --resource-group kawasakiovaas \
+  --name myLoadBalancerRuleWeb \
+  --lb-name myLoadBalancer \
+  --backend-pool-name myLoadBalancerBEPool \
+  --backend-port 9002 \
+  --frontend-ip-name loadBalancerFrontEnd \
+  --frontend-port 9002 \
+  --protocol tcp
+  
+    az network lb rule create \
+  --resource-group kawasakiovaas \
+  --name myLoadBalancerRuleWeb \
+  --lb-name myLoadBalancer \
+  --backend-pool-name myLoadBalancerBEPool \
+  --backend-port 9003 \
+  --frontend-ip-name loadBalancerFrontEnd \
+  --frontend-port 9003 \
+  --protocol tcp
+  
+  
