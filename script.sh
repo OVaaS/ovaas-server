@@ -61,5 +61,5 @@ python3 ./deployment_tools/tools/model_downloader/converter.py --name colorizati
 cp ./public/colorization-v2/FP32/* ./temp"
 
 mkdir -p ./models/colorization-v2/1
-mv /temp/* ./models/colorization-v2/1
+mv ./temp/ ./models/colorization-v2/1
 rm -r /temp
