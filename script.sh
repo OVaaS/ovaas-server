@@ -62,4 +62,4 @@ cp ./public/colorization-v2/FP32/* ./temp"
 
 mkdir -p ./models/colorization-v2/1
 mv ./temp/ ./models/colorization-v2/1
-rm -r /temp
+rm -r ./temp
